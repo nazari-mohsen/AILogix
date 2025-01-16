@@ -1,6 +1,6 @@
 # AILogix - Intelligent Log Analysis & Solutions
 
-![AILogix Image](https://github.com/nazari-mohsen/AILogix/images/AILogix.png)
+![AILogix Image](https://github.com/nazari-mohsen/AILogix/blob/main/images/AILogix.png)
 
 **AILogix** is a powerful, AI-driven log analysis tool designed to help you understand, diagnose, and solve issues within your system logs. By leveraging advanced machine learning and natural language processing techniques, AILogix provides deep insights into your logs, detects error patterns, and offers actionable solutions, all in real-time.
 Whether you're managing a large-scale production environment or working on smaller projects, AILogix helps you quickly identify and address potential issues before they escalate, reducing downtime and improving system reliability.
