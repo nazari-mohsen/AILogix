@@ -1,0 +1,44 @@
+# Python bytecode files
+*.pyc
+*.pyo
+__pycache__
+sample_log/
+app/__pycache__
+images/
+# Virtual environments
+.env/
+.venv/
+venv
+env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE or editor specific files
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# ChromaDB related files
+*.chroma
+
+# Miscellaneous files
+*.sqlite3
+*.db
+
+# Temporary or backup files
+*.bak
+*.swp
+*.swo
+
+# Docker specific files
+Dockerfile*
+docker-compose.yml
+Makefile
+.github/

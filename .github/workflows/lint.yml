@@ -1,0 +1,56 @@
+name: Python Linting With Flake8
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'tox.ini'
+      - '.github/workflows/lint.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'tox.ini'
+      - '.github/workflows/lint.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    strategy:
+      matrix:
+        python-version: ['3.13']
+      fail-fast: false
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
+            pyproject.toml
+            setup.py
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 flake8-docstrings flake8-bugbear flake8-quotes flake8-import-order
+        
+      - name: Run flake8 with error annotations
+        uses: reviewdog/action-flake8@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          fail_on_error: true
+          
+      - name: Run flake8 for statistics
+        if: always()
+        run: |
+          flake8 --statistics --count
