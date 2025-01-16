@@ -53,4 +53,4 @@ jobs:
       - name: Run flake8 for statistics
         if: always()
         run: |
-          flake8 --statistics --count
+          flake8 app --statistics --count
