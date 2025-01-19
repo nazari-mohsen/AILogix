@@ -141,4 +141,4 @@ For support or to report issues, please open a new [**Issue**](https://github.co
 License
 -------
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License.
