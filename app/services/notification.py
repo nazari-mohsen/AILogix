@@ -8,6 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import asyncio
 from datetime import datetime
+from app.core.config import get_settings
 
 # Configure logging
 logging.basicConfig(
@@ -27,25 +28,36 @@ class NotificationPriority(str, Enum):
 
 @dataclass
 class NotificationConfig:
-    # Telegram settings
-    telegram_bot_token: Optional[str] = None
-    telegram_chat_ids: List[str] = None
+    # فیلدها را به صورت دلخواه بدون مقداردهی اولیه تعریف می‌کنیم
+    telegram_bot_token: Optional[str]
+    telegram_chat_ids: List[str]
+    slack_webhook_urls: List[str]
+    slack_channel: Optional[str]
+    smtp_server: str
+    smtp_port: int
+    smtp_username: Optional[str]
+    smtp_password: Optional[str]
+    email_recipients: List[str]
+    min_severity_telegram: str
+    min_severity_slack: str
+    min_severity_email: str
 
-    # Slack settings
-    slack_webhook_urls: List[str] = None
-    slack_channel: Optional[str] = "#monitoring"
-
-    # Email settings
-    smtp_server: str = "smtp.gmail.com"
-    smtp_port: int = 587
-    smtp_username: Optional[str] = None
-    smtp_password: Optional[str] = None
-    email_recipients: List[str] = None
-
-    # Notification thresholds
-    min_severity_telegram: str = "warning"
-    min_severity_slack: str = "info"
-    min_severity_email: str = "error"
+    # متد post_init برای مقداردهی پیش‌فرض بعد از ایجاد شیء
+    def __post_init__(self):
+        settings = get_settings()
+        # مقادیر پیش‌فرض را از تنظیمات تنظیم می‌کنیم
+        self.telegram_bot_token = self.telegram_bot_token or settings.TELEGRAM_BOT_TOKEN
+        self.telegram_chat_ids = self.telegram_chat_ids or settings.TELEGRAM_CHAT_IDS
+        self.slack_webhook_urls = self.slack_webhook_urls or settings.SLACK_WEBHOOK_URLS
+        self.slack_channel = self.slack_channel or settings.SLACK_CHANNEL
+        self.smtp_server = self.smtp_server or settings.SMTP_SERVER
+        self.smtp_port = self.smtp_port or settings.SMTP_PORT
+        self.smtp_username = self.smtp_username or settings.SMTP_USERNAME
+        self.smtp_password = self.smtp_password or settings.SMTP_PASSWORD
+        self.email_recipients = self.email_recipients or settings.EMAIL_RECIPIENTS
+        self.min_severity_telegram = self.min_severity_telegram or settings.MIN_SEVERITY_TELEGRAM
+        self.min_severity_slack = self.min_severity_slack or settings.MIN_SEVERITY_SLACK
+        self.min_severity_email = self.min_severity_email or settings.MIN_SEVERITY_EMAIL
 
 
 class NotificationFormatter:

@@ -6,14 +6,14 @@ from langchain_core.output_parsers import StrOutputParser
 from chromadb import HttpClient
 from datetime import datetime
 from typing import List, Dict, Optional, TypedDict, Any
+from app.core.config import get_settings
 import numpy as np
 import logging
 import json
 import re
-import os
 from enum import Enum
 
-# Enhanced logging configuration
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -46,18 +46,20 @@ class LogResponse(TypedDict):
 
 @dataclass
 class LogAnalyzerConfig:
-    model_name: str = os.getenv("MODEL_NAME", "llama3.2")
-    collection_name: str = os.getenv("COLLECTION_NAME", "log_history")
-    similarity_threshold: float = float(os.getenv("SIMILARITY_THRESHOLD", "0.92"))
-    max_history_entries: int = int(os.getenv("MAX_HISTORY_ENTRIES", "100"))
-    chroma_host: str = os.getenv("CHROMA_HOST", "localhost")
-    chroma_port: int = int(os.getenv("CHROMA_PORT", "8001"))
-    ollama_host: str = os.getenv("OLLAMA_HOST", "localhost")
-    ollama_port: int = int(os.getenv("OLLAMA_PORT", "11434"))
-    analysis_window: int = int(os.getenv("ANALYSIS_WINDOW", "20"))
-    alert_threshold: float = float(os.getenv("ALERT_THRESHOLD", "0.85"))
-    retention_days: int = int(os.getenv("RETENTION_DAYS", "30"))
-    batch_size: int = int(os.getenv("BATCH_SIZE", "100"))
+    settings = get_settings()
+    cache_ttl: int = settings.CACHE_TTL
+    model_name: str = settings.MODEL_NAME
+    collection_name: str = settings.COLLECTION_NAME
+    similarity_threshold: float = settings.SIMILARITY_THRESHOLD
+    max_history_entries: int = settings.MAX_HISTORY_ENTRIES
+    chroma_host: str = settings.CHROMA_HOST
+    chroma_port: int = settings.CHROMA_PORT
+    ollama_host: str = settings.OLLAMA_HOST
+    ollama_port: int = settings.OLLAMA_PORT
+    analysis_window: int = settings.ANALYSIS_WINDOW
+    alert_threshold: float = settings.ALERT_THRESHOLD
+    retention_days: int = settings.RETENTION_DAYS
+    batch_size: int = settings.BATCH_SIZE
 
 
 class MetricsCollector:
@@ -81,11 +83,9 @@ class MetricsCollector:
         })
 
     def track_error_pattern(self, error_signature: str):
-        """Track recurring error patterns."""
         self.error_patterns[error_signature] = self.error_patterns.get(error_signature, 0) + 1
 
     def get_metrics_summary(self) -> Dict[str, Any]:
-        """Generate a summary of current metrics."""
         summary = {
             'error_patterns': dict(sorted(
                 self.error_patterns.items(),
